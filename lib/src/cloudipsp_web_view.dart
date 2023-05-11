@@ -48,22 +48,17 @@ class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
 
   @override
   void initState() {
-    // _webViewController.l
-    // initialUrl: 'about:blank',
-    // zoomEnabled: true,
-    // javascriptMode: JavascriptMode.unrestricted,
-    // navigationDelegate: _navigationDelegate,
-    // onWebViewCreated: _onWebViewCreated);
+    initWebView();
 
     super.initState();
   }
 
   void initWebView() async {
     await _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
-    await _webViewController.setNavigationDelegate(
-        NavigationDelegate(onNavigationRequest: _navigationDelegate));
+    await _webViewController.setNavigationDelegate(NavigationDelegate(
+      onNavigationRequest: _navigationDelegate,
+    ));
     _webViewController.enableZoom(true);
-
     _onWebViewCreated(_webViewController);
   }
 
@@ -79,13 +74,19 @@ class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
       });
     }
 
+    print(
+        'widget._confirmation.response.body.toString() ${widget._confirmation.response.body.toString()}');
+    print('widget._confirmation.baseUrl ${widget._confirmation.baseUrl}');
+
     await controller.loadHtmlString(
-        widget._confirmation.response.body.toString(),
-        baseUrl: widget._confirmation.baseUrl);
+      widget._confirmation.response.body.toString(),
+      baseUrl: widget._confirmation.baseUrl,
+    );
   }
 
   NavigationDecision _navigationDelegate(NavigationRequest request) {
     final url = request.url;
+    print('_navigationDelegate url $url');
     final detectsStartPattern =
         url.startsWith(CloudipspWebViewImpl.URL_START_PATTERN);
     var detectsCallbackUrl = false;

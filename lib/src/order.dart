@@ -30,13 +30,13 @@ class Order {
 
   final Map<String, String> arguments = HashMap();
 
-  Order({
-    required this.amount,
-    required this.currency,
-    required this.id,
-    required this.description,
+  Order(
+    this.amount,
+    this.currency,
+    this.id,
+    this.description,
     this.email,
-  }) {
+  ) {
     if (amount < 0) {
       throw ArgumentError('Amount should be more than 0');
     }
