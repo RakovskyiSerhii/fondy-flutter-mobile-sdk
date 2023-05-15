@@ -2,19 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 abstract class CreditCardCvvField extends Widget {
-  factory CreditCardCvvField({InputDecoration? decoration}) =
-      CreditCardCvvFieldImpl;
+  factory CreditCardCvvField({
+    InputDecoration? decoration,
+    TextInputAction? textInputAction,
+    TextStyle? style,
+    Function? onChanged,
+  }) = CreditCardCvvFieldImpl;
 }
 
 class CreditCardCvvFieldImpl extends StatelessWidget
     implements CreditCardCvvField {
   final textEditingController = TextEditingController(text: '');
   final InputDecoration? _decoration;
+  final TextInputAction? _textInputAction;
+  final TextStyle? _style;
+  final Function? _onChanged;
+
   final GlobalKey<CreditCardCvvFieldInternalState> _key =
       GlobalKey<CreditCardCvvFieldInternalState>();
 
-  CreditCardCvvFieldImpl({InputDecoration? decoration})
-      : _decoration = decoration;
+  CreditCardCvvFieldImpl({
+    InputDecoration? decoration,
+    TextInputAction? textInputAction,
+    TextStyle? style,
+    Function? onChanged,
+  })  : _decoration = decoration,
+        _textInputAction = textInputAction,
+        _style = style,
+        _onChanged = onChanged;
 
   setCvv4(bool enabled) {
     _key.currentState?.setCvv4(enabled);
@@ -22,33 +37,62 @@ class CreditCardCvvFieldImpl extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return CreditCardCvvFieldInternal(_key, textEditingController, _decoration);
+    return CreditCardCvvFieldInternal(
+      _key,
+      textEditingController,
+      _decoration,
+      _textInputAction,
+      _style,
+      _onChanged,
+    );
   }
 }
 
 class CreditCardCvvFieldInternal extends StatefulWidget {
   final TextEditingController _textEditingController;
   final InputDecoration? _decoration;
+  final TextInputAction? _textInputAction;
+  final TextStyle? _style;
+  final Function? _onChanged;
 
   CreditCardCvvFieldInternal(
-      Key key, this._textEditingController, this._decoration)
-      : super(key: key);
+    Key key,
+    this._textEditingController,
+    this._decoration,
+    this._textInputAction,
+    this._style,
+    this._onChanged,
+  ) : super(key: key);
 
   @override
   CreditCardCvvFieldInternalState createState() {
     return CreditCardCvvFieldInternalState(
-        this._textEditingController, this._decoration);
+      this._textEditingController,
+      this._decoration,
+      this._textInputAction,
+      this._style,
+      this._onChanged,
+    );
   }
 }
 
 class CreditCardCvvFieldInternalState
     extends State<CreditCardCvvFieldInternal> {
   final TextEditingController _textEditingController;
+  final TextInputAction? _textInputAction;
+  final TextStyle? _style;
   final InputDecoration? _decoration;
+  final Function? _onChanged;
+
   int _maxLength = 3;
 
   CreditCardCvvFieldInternalState(
-      this._textEditingController, this._decoration);
+    this._textEditingController,
+    this._decoration,
+    this._textInputAction,
+    this._style,
+    this._onChanged,
+  );
 
   setCvv4(bool enabled) {
     setState(() {
@@ -70,6 +114,9 @@ class CreditCardCvvFieldInternalState
       controller: _textEditingController,
       keyboardType: TextInputType.number,
       decoration: _decoration,
+      textInputAction: _textInputAction,
+      style: _style,
+      onChanged: (_) => _onChanged?.call(),
       inputFormatters: <TextInputFormatter>[
         LengthLimitingTextInputFormatter(_maxLength),
       ],
