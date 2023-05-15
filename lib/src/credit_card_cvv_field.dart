@@ -120,6 +120,7 @@ class CreditCardCvvFieldInternalState
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: UniqueKey(),
       controller: _textEditingController,
       keyboardType: TextInputType.number,
       decoration: _decoration,

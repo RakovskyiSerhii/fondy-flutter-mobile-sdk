@@ -35,6 +35,7 @@ class CreditCardNumberFieldImpl extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: UniqueKey(),
       controller: textEditingController,
       keyboardType: TextInputType.number,
       decoration: _decoration,
