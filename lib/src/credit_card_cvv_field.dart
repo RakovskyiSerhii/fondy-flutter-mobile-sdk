@@ -7,6 +7,7 @@ abstract class CreditCardCvvField extends Widget {
     TextInputAction? textInputAction,
     TextStyle? style,
     Function? onChanged,
+    FocusNode? focusNode,
   }) = CreditCardCvvFieldImpl;
 }
 
@@ -17,6 +18,7 @@ class CreditCardCvvFieldImpl extends StatelessWidget
   final TextInputAction? _textInputAction;
   final TextStyle? _style;
   final Function? _onChanged;
+  final FocusNode? _focusNode;
 
   final GlobalKey<CreditCardCvvFieldInternalState> _key =
       GlobalKey<CreditCardCvvFieldInternalState>();
@@ -26,10 +28,12 @@ class CreditCardCvvFieldImpl extends StatelessWidget
     TextInputAction? textInputAction,
     TextStyle? style,
     Function? onChanged,
+    FocusNode? focusNode,
   })  : _decoration = decoration,
         _textInputAction = textInputAction,
         _style = style,
-        _onChanged = onChanged;
+        _onChanged = onChanged,
+        _focusNode = focusNode;
 
   setCvv4(bool enabled) {
     _key.currentState?.setCvv4(enabled);
@@ -44,6 +48,7 @@ class CreditCardCvvFieldImpl extends StatelessWidget
       _textInputAction,
       _style,
       _onChanged,
+      _focusNode,
     );
   }
 }
@@ -54,6 +59,7 @@ class CreditCardCvvFieldInternal extends StatefulWidget {
   final TextInputAction? _textInputAction;
   final TextStyle? _style;
   final Function? _onChanged;
+  final FocusNode? _focusNode;
 
   CreditCardCvvFieldInternal(
     Key key,
@@ -62,17 +68,18 @@ class CreditCardCvvFieldInternal extends StatefulWidget {
     this._textInputAction,
     this._style,
     this._onChanged,
+    this._focusNode,
   ) : super(key: key);
 
   @override
   CreditCardCvvFieldInternalState createState() {
     return CreditCardCvvFieldInternalState(
-      this._textEditingController,
-      this._decoration,
-      this._textInputAction,
-      this._style,
-      this._onChanged,
-    );
+        this._textEditingController,
+        this._decoration,
+        this._textInputAction,
+        this._style,
+        this._onChanged,
+        _focusNode);
   }
 }
 
@@ -83,6 +90,7 @@ class CreditCardCvvFieldInternalState
   final TextStyle? _style;
   final InputDecoration? _decoration;
   final Function? _onChanged;
+  final FocusNode? _focusNode;
 
   int _maxLength = 3;
 
@@ -92,6 +100,7 @@ class CreditCardCvvFieldInternalState
     this._textInputAction,
     this._style,
     this._onChanged,
+    this._focusNode,
   );
 
   setCvv4(bool enabled) {
@@ -116,6 +125,7 @@ class CreditCardCvvFieldInternalState
       decoration: _decoration,
       textInputAction: _textInputAction,
       style: _style,
+      focusNode: _focusNode,
       onChanged: (_) => _onChanged?.call(),
       inputFormatters: <TextInputFormatter>[
         LengthLimitingTextInputFormatter(_maxLength),
