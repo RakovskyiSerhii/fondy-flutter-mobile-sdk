@@ -94,7 +94,10 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
       }
     } else if (root is ProxyWidget) {
       return _findNested<T>(root.child);
+    } else if (root is SingleChildRenderObjectWidget && root.child != null) {
+      return _findNested<T>(root.child!);
     }
+
     return null;
   }
 }
