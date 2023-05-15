@@ -11,16 +11,28 @@ import './credit_card_number_field.dart';
 import './credit_card.dart';
 
 abstract class CreditCardInputLayout extends Widget {
-  factory CreditCardInputLayout({Key? key, required Widget child}) =
-      CreditCardInputLayoutImpl;
+  factory CreditCardInputLayout({
+    Key? key,
+    required Widget child,
+    Function(CreditCard card)? onCreditCardReceived,
+    Function(CreditCardRequest request)? onControllerReady,
+  }) = CreditCardInputLayoutImpl;
 }
 
 class CreditCardInputLayoutImpl extends StatefulWidget
     implements CreditCardInputLayout {
   final Widget _child;
+  final Function(CreditCard card)? _onCreditCardReceived;
+  final Function(CreditCardRequest request)? _onControllerReady;
 
-  CreditCardInputLayoutImpl({Key? key, required Widget child})
-      : _child = child,
+  CreditCardInputLayoutImpl({
+    Key? key,
+    required Widget child,
+    Function(CreditCard card)? onCreditCardReceived,
+    Function(CreditCardRequest request)? onControllerReady,
+  })  : _child = child,
+        _onCreditCardReceived = onCreditCardReceived,
+        _onControllerReady = onControllerReady,
         super(key: key);
 
   @override
@@ -34,7 +46,7 @@ abstract class CreditCardInputState {
 }
 
 class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
-    implements CreditCardInputState {
+    implements CreditCardInputState, CreditCardRequest {
   final Widget _child;
   final CreditCardNumberFieldImpl _number;
   final CreditCardExpMmFieldImpl _expMm;
@@ -61,11 +73,19 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
 
   @override
   CreditCard getCard() {
-    return PrivateCreditCard(
+    final card = PrivateCreditCard(
         _number.textEditingController.text,
         int.tryParse(_expMm.textEditingController.text) ?? -1,
         int.tryParse(_expYy.textEditingController.text) ?? -1,
         _cvv.textEditingController.text);
+    widget._onCreditCardReceived?.call(card);
+    return card;
+  }
+
+  @override
+  void initState() {
+    widget._onControllerReady?.call(this);
+    super.initState();
   }
 
   @override
@@ -100,4 +120,17 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
 
     return null;
   }
+
+  @override
+  CreditCard requestCard() {
+    return PrivateCreditCard(
+        _number.textEditingController.text,
+        int.tryParse(_expMm.textEditingController.text) ?? -1,
+        int.tryParse(_expYy.textEditingController.text) ?? -1,
+        _cvv.textEditingController.text);
+  }
+}
+
+abstract class CreditCardRequest {
+  CreditCard requestCard();
 }
