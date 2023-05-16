@@ -60,7 +60,7 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
         _expYy = _findStrict(child, 'CreditCardExpYyField'),
         _cvv = _findStrict(child, 'CreditCardCvvField') {
     _number.textEditingController.addListener(() {
-      _cvv.setCvv4(CvvUtils.isCvv4Length(_number.textEditingController.text));
+      _cvv.setCvv4(CvvUtils.isCvv4Length(_number.textEditingController.text.replaceAll(' ', '')));
     });
   }
 
@@ -73,6 +73,7 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
 
   @override
   CreditCard getCard() {
+    print(_number.textEditingController.text.replaceAll(' ', ''));
     final card = PrivateCreditCard(
       _number.textEditingController.text.replaceAll(' ', ''),
       int.tryParse(_expMm.textEditingController.text) ?? -1,
@@ -125,7 +126,7 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
   @override
   CreditCard requestCard() {
     return PrivateCreditCard(
-        _number.textEditingController.text,
+        _number.textEditingController.text.replaceAll(' ', ''),
         int.tryParse(_expMm.textEditingController.text) ?? -1,
         int.tryParse(_expYy.textEditingController.text) ?? -1,
         _cvv.textEditingController.text);
