@@ -29,6 +29,8 @@ abstract class Cloudipsp {
 
   Future<Receipt> pay(CreditCard creditCard, Order order);
 
+  Future<Receipt> payWithRecToken(String recToken, Order order);
+
   Future<Receipt> payToken(CreditCard card, String token);
 
   Future<Receipt> applePay(Order order);
@@ -105,8 +107,26 @@ class CloudipspImpl implements Cloudipsp {
       throw ArgumentError("CreditCard is not valid");
     }
     final token = await _api.getToken(merchantId, order);
+
+    final checkoutResponse = await _api.checkout(
+      callbackUrl: Api.URL_CALLBACK,
+      token: token,
+      creditCard: card,
+      email: order.email,
+    );
+    return _payContinue(checkoutResponse, token, Api.URL_CALLBACK);
+  }
+
+  @override
+  Future<Receipt> payWithRecToken(String recToken, Order order) async {
+    final token = await _api.getToken(merchantId, order);
     final checkoutResponse =
-        await _api.checkout(card, token, order.email, Api.URL_CALLBACK);
+        await _api.checkout(
+          callbackUrl: Api.URL_CALLBACK,
+          token: token,
+          recToken: recToken,
+          email: order.email,
+        );
     return _payContinue(checkoutResponse, token, Api.URL_CALLBACK);
   }
 
@@ -116,8 +136,12 @@ class CloudipspImpl implements Cloudipsp {
       throw ArgumentError("CreditCard is not valid");
     }
     final order = await _api.getOrder(token);
-    final checkoutResponse =
-        await _api.checkout(card, token, null, order.responseUrl);
+
+    final checkoutResponse = await _api.checkout(
+      callbackUrl: order.responseUrl,
+      token: token,
+      creditCard: card,
+    );
     return await _payContinue(checkoutResponse, token, Api.URL_CALLBACK);
   }
 
@@ -260,8 +284,8 @@ class CloudipspImpl implements Cloudipsp {
 
     final response = await _api.call3ds(url, body, contentType);
     final completer = new Completer<Receipt?>();
-    _cloudipspWebViewHolder(PrivateCloudipspWebViewConfirmation(_native,
-        Api.API_HOST, url, callbackUrl, response, completer));
+    _cloudipspWebViewHolder(PrivateCloudipspWebViewConfirmation(
+        _native, Api.API_HOST, url, callbackUrl, response, completer));
     return completer.future;
   }
 }

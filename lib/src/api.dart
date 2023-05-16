@@ -131,13 +131,25 @@ class Api {
     return receipt;
   }
 
-  Future<dynamic> checkout(PrivateCreditCard creditCard, String token,
-      String? email, String callbackUrl) {
+  Future<dynamic> checkout({
+    required String token,
+    required String callbackUrl,
+    PrivateCreditCard? creditCard,
+    String? recToken,
+    String? email,
+  }) {
+    assert(recToken == null && creditCard == null);
+
     final Map<String, dynamic> request = HashMap();
-    request['card_number'] = creditCard.cardNumber;
-    request['expiry_date'] =
-        _expMmFormat(creditCard.mm) + creditCard.yy.toString();
-    request['cvv2'] = creditCard.cvv.toString();
+    if (recToken != null) {
+      request['rectoken'] = recToken;
+    } else {
+      request['card_number'] = creditCard!.cardNumber;
+      request['expiry_date'] =
+          _expMmFormat(creditCard.mm) + creditCard.yy.toString();
+      request['cvv2'] = creditCard.cvv.toString();
+    }
+
     request['payment_system'] = 'card';
     request['token'] = token;
     if (email != null && email.isNotEmpty) {

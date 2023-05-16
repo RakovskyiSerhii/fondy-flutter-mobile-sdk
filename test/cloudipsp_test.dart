@@ -99,9 +99,17 @@ void main() {
           platformSpecific: mockedPlatformSpecific);
 
       when(mockedApi.getToken(any, any)).thenAnswer((_) async => someToken);
-      when(mockedApi.checkout(cardSuccessNormal, any, any, any))
+      when(mockedApi.checkout(
+              creditCard: cardSuccessNormal,
+              token: any,
+              callbackUrl: any,
+              email: any))
           .thenAnswer((_) async => {'url': Api.URL_CALLBACK});
-      when(mockedApi.checkout(cardSuccess3DSCase1, any, any, any))
+      when(mockedApi.checkout(
+              creditCard: cardSuccess3DSCase1,
+              token: any,
+              callbackUrl: any,
+              email: any))
           .thenAnswer((_) async => {
                 'url': 'https://fake3dscase1.url',
                 'send_data': {
@@ -110,7 +118,11 @@ void main() {
                   'TermUrl': 'SomeTermUrl Case1',
                 },
               });
-      when(mockedApi.checkout(cardSuccess3DSCase2, any, any, any))
+      when(mockedApi.checkout(
+              creditCard: cardSuccess3DSCase2,
+              token: any,
+              callbackUrl: any,
+              email: any))
           .thenAnswer((_) async => {
                 'url': 'https://fake3dscase2.url',
                 'send_data': {

@@ -242,8 +242,11 @@ void main() {
               headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(RESPONSE_CHECKOUT, 200));
 
-      final result =
-          await api.checkout(creditCard, 'Token', null, 'http://callback.url');
+      final result = await api.checkout(
+          creditCard: creditCard,
+          token: 'Token',
+          email: null,
+          callbackUrl: 'http://callback.url');
       verify(mockedHttpClient.post(
               Uri.parse('https://api.fondy.eu/api/checkout/ajax'),
               body:
@@ -259,7 +262,10 @@ void main() {
           .thenAnswer((_) async => http.Response(RESPONSE_CHECKOUT, 200));
 
       final result = await api.checkout(
-          creditCard, 'Token', 'example@test.com', 'http://callback.url');
+          creditCard: creditCard,
+          token: 'Token',
+          email: 'example@test.com',
+          callbackUrl: 'http://callback.url');
       verify(mockedHttpClient.post(
               Uri.parse('https://api.fondy.eu/api/checkout/ajax'),
               body:
@@ -276,7 +282,10 @@ void main() {
 
       await expectLater(
           () => api.checkout(
-              creditCard, 'Token', 'example@test.com', 'http://callback.url'),
+              creditCard: creditCard,
+              token: 'Token',
+              email: 'example@test.com',
+              callbackUrl: 'http://callback.url'),
           thrownCloudipspApiError(500111, 'ReqID44332211', 'SomeErrorMessage'));
     });
   });
