@@ -138,7 +138,7 @@ class Api {
     String? recToken,
     String? email,
   }) {
-    assert(recToken == null && creditCard == null);
+    assert(recToken != null || creditCard != null);
 
     final Map<String, dynamic> request = HashMap();
     if (recToken != null) {
