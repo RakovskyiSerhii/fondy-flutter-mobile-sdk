@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 abstract class CreditCardNumberField extends Widget {
   factory CreditCardNumberField({
@@ -44,7 +45,10 @@ class CreditCardNumberFieldImpl extends StatelessWidget
       focusNode: _focusNode,
       onChanged: (_) => _onChanged?.call(),
       inputFormatters: <TextInputFormatter>[
-        LengthLimitingTextInputFormatter(19),
+        MaskTextInputFormatter(
+            mask: '#### #### #### ####',
+            filter: {"#": RegExp(r'[0-9]')},
+            type: MaskAutoCompletionType.lazy),
       ],
     );
   }

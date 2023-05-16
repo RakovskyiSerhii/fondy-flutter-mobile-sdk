@@ -74,10 +74,11 @@ class CreditCardInputLayoutState extends State<CreditCardInputLayoutImpl>
   @override
   CreditCard getCard() {
     final card = PrivateCreditCard(
-        _number.textEditingController.text,
-        int.tryParse(_expMm.textEditingController.text) ?? -1,
-        int.tryParse(_expYy.textEditingController.text) ?? -1,
-        _cvv.textEditingController.text);
+      _number.textEditingController.text.replaceAll(' ', ''),
+      int.tryParse(_expMm.textEditingController.text) ?? -1,
+      int.tryParse(_expYy.textEditingController.text) ?? -1,
+      _cvv.textEditingController.text,
+    );
     widget._onCreditCardReceived?.call(card);
     return card;
   }
