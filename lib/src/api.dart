@@ -134,21 +134,14 @@ class Api {
   Future<dynamic> checkout({
     required String token,
     required String callbackUrl,
-    PrivateCreditCard? creditCard,
-    String? recToken,
+    required PrivateCreditCard creditCard,
     String? email,
   }) {
-    assert(recToken != null || creditCard != null);
-
     final Map<String, dynamic> request = HashMap();
-    if (recToken != null) {
-      request['rectoken'] = recToken;
-    } else {
-      request['card_number'] = creditCard!.cardNumber;
-      request['expiry_date'] =
-          _expMmFormat(creditCard.mm) + creditCard.yy.toString();
-      request['cvv2'] = creditCard.cvv.toString();
-    }
+    request['card_number'] = creditCard.cardNumber;
+    request['expiry_date'] =
+        _expMmFormat(creditCard.mm) + creditCard.yy.toString();
+    request['cvv2'] = creditCard.cvv.toString();
 
     request['payment_system'] = 'card';
     request['token'] = token;
@@ -156,6 +149,10 @@ class Api {
       request['email'] = email;
     }
     return _call('api/checkout/ajax', request);
+  }
+
+  Future<dynamic> checkoutRecToken(Map<String, dynamic> requestData) {
+    return _call('api/recurring', requestData);
   }
 
   Future<dynamic> checkoutNativePay(

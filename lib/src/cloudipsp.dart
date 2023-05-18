@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 
 import './api.dart';
@@ -16,8 +18,9 @@ typedef void CloudipspWebViewHolder(CloudipspWebViewConfirmation confirmation);
 
 abstract class Cloudipsp {
   factory Cloudipsp(
-          int merchantId, CloudipspWebViewHolder cloudipspWebViewHolder) =
-      CloudipspImpl;
+    int merchantId,
+    CloudipspWebViewHolder cloudipspWebViewHolder,
+  ) = CloudipspImpl;
 
   int get merchantId;
 
@@ -29,7 +32,11 @@ abstract class Cloudipsp {
 
   Future<Receipt> pay(CreditCard creditCard, Order order);
 
-  Future<Receipt> payWithRecToken(String recToken, Order order);
+  Future<Receipt> payWithRecToken(
+    String recToken,
+    String merchantPassword,
+    Order order,
+  );
 
   Future<Receipt> payToken(CreditCard card, String token);
 
@@ -118,15 +125,36 @@ class CloudipspImpl implements Cloudipsp {
   }
 
   @override
-  Future<Receipt> payWithRecToken(String recToken, Order order) async {
+  Future<Receipt> payWithRecToken(
+      String recToken, String merchantPassword, Order order) async {
     final token = await _api.getToken(merchantId, order);
-    final checkoutResponse =
-        await _api.checkout(
-          callbackUrl: Api.URL_CALLBACK,
-          token: token,
-          recToken: recToken,
-          email: order.email,
-        );
+
+    final String signatureData = [
+      merchantPassword,
+      order.amount,
+      order.currency,
+      merchantId,
+      order.description,
+      order.id,
+      recToken,
+    ].join('|');
+
+    final bytes = utf8.encode(signatureData);
+    final signature = sha1.convert(bytes).toString();
+
+    final Map<String, dynamic> map = {
+      'request': {
+        'order_id': order.id,
+        'order_desc': order.description,
+        'currency': order.currency,
+        'amount': order.amount,
+        'rectoken': recToken,
+        'signature': signature,
+        'merchant_id': merchantId,
+      }
+    };
+
+    final checkoutResponse = await _api.checkoutRecToken(map);
     return _payContinue(checkoutResponse, token, Api.URL_CALLBACK);
   }
 
