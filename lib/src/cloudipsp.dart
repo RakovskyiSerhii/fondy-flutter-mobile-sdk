@@ -154,7 +154,7 @@ class CloudipspImpl implements Cloudipsp {
 
     final checkoutResponse = await _api.checkoutRecToken(map);
 
-    return ShortReceipt.fromJson(checkoutResponse['response']);
+    return ShortReceipt.fromJson(checkoutResponse);
   }
 
   @override
