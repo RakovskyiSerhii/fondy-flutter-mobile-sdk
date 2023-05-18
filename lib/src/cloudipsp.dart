@@ -154,13 +154,6 @@ class CloudipspImpl implements Cloudipsp {
 
     final checkoutResponse = await _api.checkoutRecToken(map);
 
-    final url = checkoutResponse['url'] as String;
-    if (!url.startsWith(Api.URL_CALLBACK)) {
-      final receipt = await _threeDS(url, checkoutResponse, Api.URL_CALLBACK);
-      if (receipt != null) {
-        return ShortReceipt.fromReceipt(receipt);
-      }
-    }
     return ShortReceipt.fromJson(checkoutResponse['response']);
   }
 
