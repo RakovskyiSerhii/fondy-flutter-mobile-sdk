@@ -127,7 +127,7 @@ class CloudipspImpl implements Cloudipsp {
   @override
   Future<Receipt> payWithRecToken(
       String recToken, String merchantPassword, Order order) async {
-    final token = await _api.getToken(merchantId, order);
+    // final token = await _api.getToken(merchantId, order);
 
     final String signatureData = [
       merchantPassword,
@@ -153,7 +153,17 @@ class CloudipspImpl implements Cloudipsp {
     };
 
     final checkoutResponse = await _api.checkoutRecToken(map);
-    return _payContinue(checkoutResponse, token, Api.URL_CALLBACK);
+
+    final url = checkoutResponse['url'] as String;
+    if (!url.startsWith(Api.URL_CALLBACK)) {
+      final receipt = await _threeDS(url, checkoutResponse, Api.URL_CALLBACK);
+      if (receipt != null) {
+        return receipt;
+      }
+    }
+    final receipt = Receipt.fromJson(checkoutResponse, 'responseUrl');
+    if (receipt != null) return receipt;
+    else throw Exception('Something wrong');
   }
 
   @override
