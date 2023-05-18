@@ -175,26 +175,15 @@ class Receipt {
 }
 
 class ShortReceipt {
-  // response_status
-  // order_status
-  // response_description
-  // approval_code
-  // response_code
-
-  final String responseStatus;
   final Status orderStatus;
-  final String responseDescription;
   final int? approvalCode;
   final int? responseCode;
 
-  ShortReceipt(this.responseStatus, this.orderStatus, this.responseDescription,
-      this.approvalCode, this.responseCode);
+  ShortReceipt(this.orderStatus, this.approvalCode, this.responseCode);
 
   factory ShortReceipt.fromJson(dynamic response) {
     return ShortReceipt(
-        response['response_status'] ?? '',
         _statusFromString(response['order_status']),
-        response['response_description'] ?? '',
         int.tryParse(response['approval_code'].toString()),
         int.tryParse(response['response_code'].toString()));
   }
@@ -206,9 +195,7 @@ class ShortReceipt {
 
   factory ShortReceipt.fromReceipt(Receipt receipt) {
     return ShortReceipt(
-      '',
       receipt.status,
-      '',
       int.tryParse(receipt.approvalCode),
       receipt.responseCode,
     );
