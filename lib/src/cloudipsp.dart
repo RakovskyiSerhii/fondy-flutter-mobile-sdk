@@ -143,15 +143,13 @@ class CloudipspImpl implements Cloudipsp {
     final signature = sha1.convert(bytes).toString();
 
     final Map<String, dynamic> map = {
-      'request': {
-        'order_id': order.id,
-        'order_desc': order.description,
-        'currency': order.currency,
-        'amount': order.amount,
-        'rectoken': recToken,
-        'signature': signature,
-        'merchant_id': merchantId,
-      }
+      'order_id': order.id,
+      'order_desc': order.description,
+      'currency': order.currency,
+      'amount': order.amount,
+      'rectoken': recToken,
+      'signature': signature,
+      'merchant_id': merchantId,
     };
 
     final checkoutResponse = await _api.checkoutRecToken(map);
