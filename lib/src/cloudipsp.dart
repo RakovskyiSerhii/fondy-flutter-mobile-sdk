@@ -32,7 +32,7 @@ abstract class Cloudipsp {
 
   Future<Receipt> pay(CreditCard creditCard, Order order);
 
-  Future<Receipt> payWithRecToken(
+  Future<ShortReceipt> payWithRecToken(
     String recToken,
     String merchantPassword,
     Order order,
@@ -125,7 +125,7 @@ class CloudipspImpl implements Cloudipsp {
   }
 
   @override
-  Future<Receipt> payWithRecToken(
+  Future<ShortReceipt> payWithRecToken(
       String recToken, String merchantPassword, Order order) async {
     // final token = await _api.getToken(merchantId, order);
 
@@ -158,12 +158,10 @@ class CloudipspImpl implements Cloudipsp {
     if (!url.startsWith(Api.URL_CALLBACK)) {
       final receipt = await _threeDS(url, checkoutResponse, Api.URL_CALLBACK);
       if (receipt != null) {
-        return receipt;
+        return ShortReceipt.fromReceipt(receipt);
       }
     }
-    final receipt = Receipt.fromJson(checkoutResponse, 'responseUrl');
-    if (receipt != null) return receipt;
-    else throw Exception('Something wrong');
+    return ShortReceipt.fromJson(checkoutResponse);
   }
 
   @override
