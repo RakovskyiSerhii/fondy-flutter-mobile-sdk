@@ -161,7 +161,7 @@ class CloudipspImpl implements Cloudipsp {
         return ShortReceipt.fromReceipt(receipt);
       }
     }
-    return ShortReceipt.fromJson(checkoutResponse);
+    return ShortReceipt.fromJson(checkoutResponse['response']);
   }
 
   @override
