@@ -93,7 +93,7 @@ class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
     if (currentUrl == url) {
       print('_navigationDelegate url == currentUrl');
 
-      return NavigationDecision.prevent;
+      // return NavigationDecision.prevent;
     }
     final detectsStartPattern =
         url.startsWith(CloudipspWebViewImpl.URL_START_PATTERN);

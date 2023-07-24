@@ -26,7 +26,7 @@ class _ExampleState extends State<Example> {
   ExampleOrderMode _orderMode = ExampleOrderMode.Order;
   ExampleCardInputMode _cardInputMode = ExampleCardInputMode.CardInputView;
 
-  CloudipspWebViewConfirmation _cloudipspWebViewConfirmation;
+  CloudipspWebViewConfirmation? _cloudipspWebViewConfirmation;
   bool _supportsApplePay = false;
   bool _supportsGooglePay = false;
   final _tokenEditingController = TextEditingController(text: '');
@@ -41,7 +41,7 @@ class _ExampleState extends State<Example> {
   final GlobalKey _cloudipspWebViewKey = GlobalKey();
   final GlobalKey _creditCardInputKey = GlobalKey();
 
-  Cloudipsp _cloudipsp;
+  Cloudipsp? _cloudipsp;
 
   @override
   void initState() {
