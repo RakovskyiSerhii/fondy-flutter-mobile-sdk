@@ -45,6 +45,7 @@ class CloudipspWebViewImpl extends StatefulWidget implements CloudipspWebView {
 
 class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
   final WebViewController _webViewController = WebViewController();
+  String? currentUrl;
 
   @override
   void initState() {
@@ -85,8 +86,15 @@ class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
   }
 
   NavigationDecision _navigationDelegate(NavigationRequest request) {
+    // _webViewController.
     final url = request.url;
     print('_navigationDelegate url $url');
+
+    if (currentUrl == url) {
+      print('_navigationDelegate url == currentUrl');
+
+      return NavigationDecision.prevent;
+    }
     final detectsStartPattern =
         url.startsWith(CloudipspWebViewImpl.URL_START_PATTERN);
     var detectsCallbackUrl = false;
@@ -116,11 +124,14 @@ class _CloudipspWebViewImplState extends State<CloudipspWebViewImpl> {
       widget._confirmation.completer.complete(receipt);
       return NavigationDecision.prevent;
     }
+    currentUrl = url;
     return NavigationDecision.navigate;
   }
 
   @override
   Widget build(BuildContext context) {
+    print('_CloudipspWebViewImplState build url');
+
     return WebViewWidget(controller: _webViewController);
   }
 }
